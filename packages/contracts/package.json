@@ -10,6 +10,7 @@
     "./event-bus": "./event-bus.ts",
     "./events": "./events.ts",
     "./planning": "./planning.ts",
+    "./planning-state": "./planning-state.ts",
     "./platform": "./platform.ts"
   }
 }

@@ -1,5 +1,7 @@
 import {
+  getPlanningJobSnapshot,
   getLastPlatformEvent,
+  subscribeToPlanningJobSnapshot,
   subscribeToPlatformEvent,
   type JobStatus,
 } from "@tos/contracts";
@@ -8,13 +10,16 @@ import { deriveAnalyticsSnapshot, getAnalyticsSeedJobs } from "./domain/analytic
 import "./App.css";
 
 function App() {
+  const initialPlanningSnapshot = getPlanningJobSnapshot();
   const [selectedContainerId, setSelectedContainerId] = useState<string | null>(
     getLastPlatformEvent("containerSelected")?.id ?? null,
   );
   const [lastJobUpdate, setLastJobUpdate] = useState<{ id: string; status: JobStatus } | null>(
     getLastPlatformEvent("jobUpdated") ?? null,
   );
-  const [jobSnapshots, setJobSnapshots] = useState(getAnalyticsSeedJobs());
+  const [jobSnapshots, setJobSnapshots] = useState(
+    initialPlanningSnapshot.length > 0 ? initialPlanningSnapshot : getAnalyticsSeedJobs(),
+  );
   const [refreshTick, setRefreshTick] = useState(0);
 
   useEffect(() => {
@@ -22,18 +27,12 @@ function App() {
       setSelectedContainerId(id);
     });
 
+    const unsubscribePlanningSnapshot = subscribeToPlanningJobSnapshot((jobs) => {
+      setJobSnapshots(jobs);
+    });
+
     const unsubscribeJob = subscribeToPlatformEvent("jobUpdated", ({ id, status }) => {
       setLastJobUpdate({ id, status });
-      setJobSnapshots((currentJobs) =>
-        currentJobs.map((job) =>
-          job.id === id
-            ? {
-                ...job,
-                status,
-              }
-            : job,
-        ),
-      );
     });
 
     const intervalId = window.setInterval(() => {
@@ -42,6 +41,7 @@ function App() {
 
     return () => {
       unsubscribeContainer();
+      unsubscribePlanningSnapshot();
       unsubscribeJob();
       window.clearInterval(intervalId);
     };

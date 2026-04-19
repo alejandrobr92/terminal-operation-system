@@ -1,6 +1,7 @@
 import {
   emitPlatformEvent,
   getLastPlatformEvent,
+  setPlanningJobSnapshot,
   subscribeToPlatformEvent,
 } from "@tos/contracts";
 import { useEffect, useMemo, useState } from "react";
@@ -31,6 +32,10 @@ function App() {
       setSelectedContainerId(id);
     });
   }, []);
+
+  useEffect(() => {
+    setPlanningJobSnapshot(jobItems);
+  }, [jobItems]);
 
   const handleAdvanceJob = (jobId: string) => {
     const targetJob = jobItems.find((job) => job.id === jobId);
