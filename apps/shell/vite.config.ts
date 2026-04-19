@@ -1,41 +1,52 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import { federation } from '@module-federation/vite'
 
-export default defineConfig({
-  plugins: [
-    react(),
-    federation({
-      name: 'shell',
-      dts: false,
-      remotes: {
-        yard: 'mfe_yard@http://127.0.0.1:3001/mf-manifest.json',
-        planning: 'mfe_planning@http://127.0.0.1:3002/mf-manifest.json',
-        analytics: 'mfe_analytics@http://127.0.0.1:3003/mf-manifest.json',
-      },
-      shared: {
-        '@tos/contracts': {
-          singleton: true,
+function getRemoteDefinition(remoteName: string, remoteUrl: string) {
+  return `${remoteName}@${remoteUrl}/mf-manifest.json`;
+}
+
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
+  const yardRemoteUrl = env.VITE_YARD_REMOTE_URL ?? "http://127.0.0.1:3001";
+  const planningRemoteUrl = env.VITE_PLANNING_REMOTE_URL ?? "http://127.0.0.1:3002";
+  const analyticsRemoteUrl = env.VITE_ANALYTICS_REMOTE_URL ?? "http://127.0.0.1:3003";
+
+  return {
+    plugins: [
+      react(),
+      federation({
+        name: 'shell',
+        dts: false,
+        remotes: {
+          yard: getRemoteDefinition('mfe_yard', yardRemoteUrl),
+          planning: getRemoteDefinition('mfe_planning', planningRemoteUrl),
+          analytics: getRemoteDefinition('mfe_analytics', analyticsRemoteUrl),
         },
-        react: {
-          singleton: true,
+        shared: {
+          '@tos/contracts': {
+            singleton: true,
+          },
+          react: {
+            singleton: true,
+          },
+          'react-dom': {
+            singleton: true,
+          },
         },
-        'react-dom': {
-          singleton: true,
-        },
-      },
-    }),
-  ],
-  server: {
-    host: '127.0.0.1',
-    origin: 'http://127.0.0.1:3000',
-    port: 3000,
-  },
-  preview: {
-    host: '127.0.0.1',
-    port: 3000,
-  },
-  build: {
-    target: 'chrome89',
-  },
+      }),
+    ],
+    server: {
+      host: '127.0.0.1',
+      origin: 'http://127.0.0.1:3000',
+      port: 3000,
+    },
+    preview: {
+      host: '127.0.0.1',
+      port: 3000,
+    },
+    build: {
+      target: 'chrome89',
+    },
+  }
 })

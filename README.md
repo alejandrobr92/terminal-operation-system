@@ -123,6 +123,25 @@ pnpm dev:planning
 pnpm dev:analytics
 ```
 
+## Vercel Deployment
+
+This workspace is intended to be deployed as four separate Vercel projects, one per app:
+
+- `apps/shell`
+- `apps/mfe-yard`
+- `apps/mfe-planning`
+- `apps/mfe-analytics`
+
+The shell reads remote manifest URLs from environment variables at build time:
+
+```bash
+VITE_YARD_REMOTE_URL=https://your-yard-app.vercel.app
+VITE_PLANNING_REMOTE_URL=https://your-planning-app.vercel.app
+VITE_ANALYTICS_REMOTE_URL=https://your-analytics-app.vercel.app
+```
+
+Deployment instructions are documented in [DEPLOYMENT.md](./DEPLOYMENT.md).
+
 ## Manual Verification Flow
 
 Once all four apps are running:
