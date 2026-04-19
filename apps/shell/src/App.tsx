@@ -1,121 +1,156 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { Suspense, lazy, useEffect, useState } from "react";
+import type { PlatformRoute, RemoteDefinition } from "@tos/contracts";
+import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0)
+const YardRemote = lazy(() => import("yard/App"));
+const PlanningRemote = lazy(() => import("planning/App"));
+const AnalyticsRemote = lazy(() => import("analytics/App"));
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+const remoteDefinitions: RemoteDefinition[] = [
+  {
+    id: "yard",
+    displayName: "Yard Operations",
+    route: "/yard",
+    module: "yard/App",
+  },
+  {
+    id: "planning",
+    displayName: "Move Planning",
+    route: "/planning",
+    module: "planning/App",
+  },
+  {
+    id: "analytics",
+    displayName: "Analytics",
+    route: "/analytics",
+    module: "analytics/App",
+  },
+];
 
-      <div className="ticks"></div>
+const routeSet = new Set<PlatformRoute>(["/", "/yard", "/planning", "/analytics"]);
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+function getCurrentRoute(): PlatformRoute {
+  const pathname = window.location.pathname as PlatformRoute;
+  return routeSet.has(pathname) ? pathname : "/";
 }
 
-export default App
+function App() {
+  const [route, setRoute] = useState<PlatformRoute>(() => getCurrentRoute());
+
+  useEffect(() => {
+    const handlePopState = () => setRoute(getCurrentRoute());
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  const navigate = (nextRoute: PlatformRoute) => {
+    if (nextRoute === route) {
+      return;
+    }
+
+    window.history.pushState({}, "", nextRoute);
+    setRoute(nextRoute);
+  };
+
+  const activeRemote = remoteDefinitions.find((definition) => definition.route === route);
+
+  return (
+    <main className="shell-app">
+      <section className="shell-hero">
+        <div>
+          <p className="eyebrow">Shell Application</p>
+          <h1>Terminal operations, composed from independent remotes.</h1>
+          <p className="hero-copy">
+            The shell owns navigation, route state, and remote composition while
+            each domain keeps its own UI and contract surface.
+          </p>
+        </div>
+
+        <div className="status-card">
+          <span>Runtime composition</span>
+          <strong>{activeRemote ? activeRemote.displayName : "Platform overview"}</strong>
+          <p>{activeRemote ? activeRemote.module : "Select a route to mount a remote."}</p>
+        </div>
+      </section>
+
+      <nav className="shell-nav" aria-label="Platform navigation">
+        <button
+          className={route === "/" ? "nav-link active" : "nav-link"}
+          onClick={() => navigate("/")}
+          type="button"
+        >
+          Overview
+        </button>
+        {remoteDefinitions.map((definition) => (
+          <button
+            key={definition.id}
+            className={route === definition.route ? "nav-link active" : "nav-link"}
+            onClick={() => navigate(definition.route)}
+            type="button"
+          >
+            {definition.displayName}
+          </button>
+        ))}
+      </nav>
+
+      <section className="shell-frame">
+        {route === "/" ? (
+          <Overview onNavigate={navigate} />
+        ) : (
+          <Suspense fallback={<RouteFallback route={route} />}>
+            <RemoteOutlet route={route} />
+          </Suspense>
+        )}
+      </section>
+    </main>
+  );
+}
+
+function Overview({ onNavigate }: { onNavigate: (route: PlatformRoute) => void }) {
+  return (
+    <div className="overview-grid">
+      {remoteDefinitions.map((definition) => (
+        <article key={definition.id} className="overview-card">
+          <div>
+            <p className="overview-label">{definition.displayName}</p>
+            <h2>{definition.route}</h2>
+            <p className="overview-copy">
+              Remote module <code>{definition.module}</code> is ready for shell-driven composition.
+            </p>
+          </div>
+          <button type="button" className="card-action" onClick={() => onNavigate(definition.route)}>
+            Open remote
+          </button>
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function RouteFallback({ route }: { route: PlatformRoute }) {
+  return (
+    <div className="fallback-panel" role="status" aria-live="polite">
+      <p className="fallback-label">Loading remote</p>
+      <strong>{route.replace("/", "") || "overview"}</strong>
+      <p>The shell frame stays active while the domain bundle is resolved.</p>
+    </div>
+  );
+}
+
+function RemoteOutlet({ route }: { route: PlatformRoute }) {
+  if (route === "/yard") {
+    return <YardRemote />;
+  }
+
+  if (route === "/planning") {
+    return <PlanningRemote />;
+  }
+
+  if (route === "/analytics") {
+    return <AnalyticsRemote />;
+  }
+
+  return null;
+}
+
+export default App;

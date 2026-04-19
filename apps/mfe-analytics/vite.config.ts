@@ -6,8 +6,9 @@ export default defineConfig({
   plugins: [
     react(),
     federation({
-      name: 'mfe-analytics',
+      name: 'mfe_analytics',
       filename: 'remoteEntry.js',
+      manifest: true,
       dts: false,
       exposes: {
         './App': './src/App.tsx',

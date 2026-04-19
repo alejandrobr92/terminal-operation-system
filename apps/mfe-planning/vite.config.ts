@@ -6,8 +6,9 @@ export default defineConfig({
   plugins: [
     react(),
     federation({
-      name: 'mfe-planning',
+      name: 'mfe_planning',
       filename: 'remoteEntry.js',
+      manifest: true,
       dts: false,
       exposes: {
         './App': './src/App.tsx',

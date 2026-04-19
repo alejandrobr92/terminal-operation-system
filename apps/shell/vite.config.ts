@@ -8,6 +8,11 @@ export default defineConfig({
     federation({
       name: 'shell',
       dts: false,
+      remotes: {
+        yard: 'mfe_yard@http://127.0.0.1:3001/mf-manifest.json',
+        planning: 'mfe_planning@http://127.0.0.1:3002/mf-manifest.json',
+        analytics: 'mfe_analytics@http://127.0.0.1:3003/mf-manifest.json',
+      },
       shared: {
         '@tos/contracts': {
           singleton: true,

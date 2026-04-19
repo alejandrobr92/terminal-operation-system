@@ -6,8 +6,9 @@ export default defineConfig({
   plugins: [
     react(),
     federation({
-      name: 'mfe-yard',
+      name: 'mfe_yard',
       filename: 'remoteEntry.js',
+      manifest: true,
       dts: false,
       exposes: {
         './App': './src/App.tsx',

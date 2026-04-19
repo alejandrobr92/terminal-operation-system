@@ -12,9 +12,9 @@
 
 ## 3. Shell Composition
 
-- [ ] 3.1 Add shell routing and primary navigation for yard operations, planning, and analytics
-- [ ] 3.2 Configure the shell to consume the three remotes through Module Federation and render them inside a shared application frame
-- [ ] 3.3 Add loading or fallback states so remote routes remain usable while modules are being resolved
+- [x] 3.1 Add shell routing and primary navigation for yard operations, planning, and analytics
+- [x] 3.2 Configure the shell to consume the three remotes through Module Federation and render them inside a shared application frame
+- [x] 3.3 Add loading or fallback states so remote routes remain usable while modules are being resolved
 
 ## 4. Shared Communication
 
