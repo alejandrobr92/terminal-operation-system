@@ -24,6 +24,6 @@
 
 ## 5. Validation
 
-- [ ] 5.1 Verify the shell can run locally and navigate to each remote successfully
-- [ ] 5.2 Verify shared React runtime behavior and confirm duplicate dependency instances are avoided
-- [ ] 5.3 Document any follow-up gaps that should be handled in later yard, planning, or analytics changes
+- [x] 5.1 Verify the shell can run locally and navigate to each remote successfully
+- [x] 5.2 Verify shared React runtime behavior and confirm duplicate dependency instances are avoided
+- [x] 5.3 Document any follow-up gaps that should be handled in later yard, planning, or analytics changes

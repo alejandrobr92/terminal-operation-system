@@ -57,6 +57,7 @@ Current architectural rules:
 - cross-MFE communication happens through a typed event bus, not direct imports between domain remotes
 
 More detail is documented in [ARCHITECTURE.md](./ARCHITECTURE.md).
+Validation details are documented in [VALIDATION.md](./VALIDATION.md).
 
 ## Current Status
 
