@@ -2,43 +2,16 @@ import {
   emitPlatformEvent,
   getLastPlatformEvent,
   subscribeToPlatformEvent,
-  type Job,
-  type JobStatus,
 } from "@tos/contracts";
 import { useEffect, useState } from "react";
+import { getNextJobStatus, getPlanningJobs, type PlanningJobRecord } from "./domain/planning-data";
 import "./App.css";
-
-const jobs: Job[] = [
-  {
-    id: "JOB-1002",
-    containerId: "MSCU-442109",
-    status: "Queued",
-    priority: "High",
-    movementId: "MOVE-17",
-  },
-  {
-    id: "JOB-1005",
-    containerId: "OOLU-770341",
-    status: "Assigned",
-    priority: "Medium",
-    movementId: "MOVE-22",
-  },
-  {
-    id: "JOB-1014",
-    containerId: "TGHU-192880",
-    status: "InProgress",
-    priority: "Low",
-    movementId: "MOVE-31",
-  },
-];
-
-const statusCycle: JobStatus[] = ["Queued", "Assigned", "InProgress", "Completed"];
 
 function App() {
   const [selectedContainerId, setSelectedContainerId] = useState<string | null>(
     getLastPlatformEvent("containerSelected")?.id ?? null,
   );
-  const [jobItems, setJobItems] = useState<Job[]>(jobs);
+  const [jobItems, setJobItems] = useState<PlanningJobRecord[]>(getPlanningJobs());
 
   useEffect(() => {
     return subscribeToPlatformEvent("containerSelected", ({ id }) => {
@@ -52,8 +25,7 @@ function App() {
       return;
     }
 
-    const currentIndex = statusCycle.indexOf(targetJob.status);
-    const nextStatus = statusCycle[(currentIndex + 1) % statusCycle.length];
+    const nextStatus = getNextJobStatus(targetJob.status);
 
     setJobItems((currentJobs) =>
       currentJobs.map((job) =>

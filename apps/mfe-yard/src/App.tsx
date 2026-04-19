@@ -1,17 +1,14 @@
-import { emitPlatformEvent, type Container } from "@tos/contracts";
+import { emitPlatformEvent } from "@tos/contracts";
 import { useState } from "react";
+import { getYardContainers, type YardContainerRecord } from "./domain/yard-data";
 import "./App.css";
 
-const containers: Container[] = [
-  { id: "MSCU-442109", status: "INBOUND", location: "A1-04", priority: 1 },
-  { id: "TGHU-192880", status: "HOLD", location: "B3-11", priority: 3 },
-  { id: "OOLU-770341", status: "OUTBOUND", location: "C2-07", priority: 2 },
-];
+const containers = getYardContainers();
 
 function App() {
   const [selectedContainerId, setSelectedContainerId] = useState<string>(containers[0].id);
 
-  const handleSelectContainer = (container: Container) => {
+  const handleSelectContainer = (container: YardContainerRecord) => {
     setSelectedContainerId(container.id);
     emitPlatformEvent("containerSelected", { id: container.id });
   };
@@ -53,7 +50,7 @@ function App() {
               <div>
                 <p className="container-id">{container.id}</p>
                 <p className="container-meta">
-                  {container.status} · {container.location}
+                  {container.status} · {container.location} · {container.block}
                 </p>
               </div>
               <div className="container-actions">

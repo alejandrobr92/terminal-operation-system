@@ -1,18 +1,11 @@
 import {
   getLastPlatformEvent,
   subscribeToPlatformEvent,
-  type KpiMetric,
   type JobStatus,
 } from "@tos/contracts";
 import { useEffect, useMemo, useState } from "react";
+import { deriveAnalyticsSnapshot, getAnalyticsSeedJobs } from "./domain/analytics-data";
 import "./App.css";
-
-const metrics: KpiMetric[] = [
-  { key: "throughput", label: "Throughput", value: 184, unit: "moves/day" },
-  { key: "movesPerHour", label: "Moves per hour", value: 27, unit: "mph" },
-  { key: "yardOccupancy", label: "Yard occupancy", value: 76, unit: "%" },
-  { key: "pendingJobs", label: "Pending jobs", value: 14, unit: "jobs" },
-];
 
 function App() {
   const [selectedContainerId, setSelectedContainerId] = useState<string | null>(
@@ -21,9 +14,8 @@ function App() {
   const [lastJobUpdate, setLastJobUpdate] = useState<{ id: string; status: JobStatus } | null>(
     getLastPlatformEvent("jobUpdated") ?? null,
   );
-  const [pendingJobs, setPendingJobs] = useState<number>(
-    metrics.find((metric) => metric.key === "pendingJobs")?.value ?? 0,
-  );
+  const [jobSnapshots, setJobSnapshots] = useState(getAnalyticsSeedJobs());
+  const [refreshTick, setRefreshTick] = useState(0);
 
   useEffect(() => {
     const unsubscribeContainer = subscribeToPlatformEvent("containerSelected", ({ id }) => {
@@ -32,27 +24,38 @@ function App() {
 
     const unsubscribeJob = subscribeToPlatformEvent("jobUpdated", ({ id, status }) => {
       setLastJobUpdate({ id, status });
-      setPendingJobs((current) => {
-        if (status === "Completed") {
-          return Math.max(0, current - 1);
-        }
-
-        return current;
-      });
+      setJobSnapshots((currentJobs) =>
+        currentJobs.map((job) =>
+          job.id === id
+            ? {
+                ...job,
+                status,
+              }
+            : job,
+        ),
+      );
     });
+
+    const intervalId = window.setInterval(() => {
+      setRefreshTick((current) => current + 1);
+    }, 2000);
 
     return () => {
       unsubscribeContainer();
       unsubscribeJob();
+      window.clearInterval(intervalId);
     };
   }, []);
 
-  const dashboardMetrics = useMemo(
+  const dashboardState = useMemo(
     () =>
-      metrics.map((metric) =>
-        metric.key === "pendingJobs" ? { ...metric, value: pendingJobs } : metric,
-      ),
-    [pendingJobs],
+      deriveAnalyticsSnapshot({
+        containerSelection: selectedContainerId ? { id: selectedContainerId } : null,
+        jobs: jobSnapshots,
+        lastJobUpdate,
+        tick: refreshTick,
+      }),
+    [jobSnapshots, lastJobUpdate, refreshTick, selectedContainerId],
   );
 
   return (
@@ -69,7 +72,7 @@ function App() {
       </section>
 
       <section className="metric-grid">
-        {dashboardMetrics.map((metric) => (
+        {dashboardState.metrics.map((metric) => (
           <article key={metric.key} className="metric-card">
             <span>{metric.label}</span>
             <strong>{metric.value}</strong>
@@ -80,12 +83,8 @@ function App() {
 
       <section className="insight-panel">
         <div>
-          <h2>Bootstrap insight lane</h2>
-          <p>
-            {selectedContainerId
-              ? `Container ${selectedContainerId} was selected in yard operations.`
-              : "Waiting for a container selection from yard operations."}
-          </p>
+          <h2>{dashboardState.insight.title}</h2>
+          <p>{dashboardState.insight.detail}</p>
         </div>
         <div className="insight-chip">
           {lastJobUpdate
