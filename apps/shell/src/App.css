@@ -5,6 +5,7 @@
 
 .shell-hero,
 .shell-nav,
+.event-banner,
 .shell-frame,
 .status-card,
 .overview-card,
@@ -17,6 +18,7 @@
 }
 
 .shell-hero,
+.event-banner,
 .shell-frame {
   padding: 1.75rem;
 }
@@ -78,6 +80,21 @@
 
 .status-card strong {
   font-size: 1.35rem;
+}
+
+.event-banner span {
+  display: block;
+  margin: 0 0 0.45rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #5a6f99;
+}
+
+.event-banner strong {
+  color: #14213d;
+  font-size: 1.1rem;
 }
 
 .shell-nav {

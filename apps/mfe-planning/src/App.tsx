@@ -1,4 +1,11 @@
-import type { Job } from "@tos/contracts";
+import {
+  emitPlatformEvent,
+  getLastPlatformEvent,
+  subscribeToPlatformEvent,
+  type Job,
+  type JobStatus,
+} from "@tos/contracts";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 const jobs: Job[] = [
@@ -25,7 +32,46 @@ const jobs: Job[] = [
   },
 ];
 
+const statusCycle: JobStatus[] = ["Queued", "Assigned", "InProgress", "Completed"];
+
 function App() {
+  const [selectedContainerId, setSelectedContainerId] = useState<string | null>(
+    getLastPlatformEvent("containerSelected")?.id ?? null,
+  );
+  const [jobItems, setJobItems] = useState<Job[]>(jobs);
+
+  useEffect(() => {
+    return subscribeToPlatformEvent("containerSelected", ({ id }) => {
+      setSelectedContainerId(id);
+    });
+  }, []);
+
+  const handleAdvanceJob = (jobId: string) => {
+    const targetJob = jobItems.find((job) => job.id === jobId);
+    if (!targetJob) {
+      return;
+    }
+
+    const currentIndex = statusCycle.indexOf(targetJob.status);
+    const nextStatus = statusCycle[(currentIndex + 1) % statusCycle.length];
+
+    setJobItems((currentJobs) =>
+      currentJobs.map((job) =>
+        job.id === jobId
+          ? {
+              ...job,
+              status: nextStatus,
+            }
+          : job,
+      ),
+    );
+
+    emitPlatformEvent("jobUpdated", {
+      id: targetJob.id,
+      status: nextStatus,
+    });
+  };
+
   return (
     <main className="planning-shell">
       <section className="planning-hero">
@@ -35,7 +81,7 @@ function App() {
         </div>
         <div className="hero-note">
           <span>Queue health</span>
-          <strong>{jobs.length} active jobs</strong>
+          <strong>{jobItems.length} active jobs</strong>
         </div>
       </section>
 
@@ -54,6 +100,14 @@ function App() {
         </article>
       </section>
 
+      {selectedContainerId ? (
+        <section className="selection-banner">
+          <span>Cross-MFE signal</span>
+          <strong>{selectedContainerId}</strong>
+          <p>The planning queue is reacting to a container selection from yard operations.</p>
+        </section>
+      ) : null}
+
       <section className="queue-panel">
         <div className="queue-header">
           <h2>Bootstrap queue</h2>
@@ -61,8 +115,11 @@ function App() {
         </div>
 
         <ul className="job-list">
-          {jobs.map((job) => (
-            <li key={job.id}>
+          {jobItems.map((job) => (
+            <li
+              key={job.id}
+              className={selectedContainerId === job.containerId ? "job-item active" : "job-item"}
+            >
               <div>
                 <p className="job-id">{job.id}</p>
                 <p className="job-meta">
@@ -72,6 +129,9 @@ function App() {
               <div className="job-state">
                 <span>{job.status}</span>
                 <strong>{job.priority}</strong>
+                <button className="job-action" onClick={() => handleAdvanceJob(job.id)} type="button">
+                  Advance status
+                </button>
               </div>
             </li>
           ))}

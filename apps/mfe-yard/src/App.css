@@ -122,6 +122,12 @@
   border: 1px solid rgba(81, 114, 94, 0.14);
 }
 
+.container-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .container-id {
   margin: 0;
   font-weight: 700;
@@ -142,6 +148,21 @@
   font-weight: 700;
 }
 
+.select-button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.55rem 0.9rem;
+  background: rgba(23, 51, 38, 0.08);
+  color: #173326;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.select-button.active {
+  background: #173326;
+  color: #f3f7ef;
+}
+
 @media (max-width: 640px) {
   .yard-hero,
   .manifest,
@@ -152,5 +173,10 @@
   .container-list li {
     align-items: start;
     flex-direction: column;
+  }
+
+  .container-actions {
+    width: 100%;
+    justify-content: space-between;
   }
 }

@@ -1,4 +1,10 @@
-import type { KpiMetric } from "@tos/contracts";
+import {
+  getLastPlatformEvent,
+  subscribeToPlatformEvent,
+  type KpiMetric,
+  type JobStatus,
+} from "@tos/contracts";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 
 const metrics: KpiMetric[] = [
@@ -9,6 +15,46 @@ const metrics: KpiMetric[] = [
 ];
 
 function App() {
+  const [selectedContainerId, setSelectedContainerId] = useState<string | null>(
+    getLastPlatformEvent("containerSelected")?.id ?? null,
+  );
+  const [lastJobUpdate, setLastJobUpdate] = useState<{ id: string; status: JobStatus } | null>(
+    getLastPlatformEvent("jobUpdated") ?? null,
+  );
+  const [pendingJobs, setPendingJobs] = useState<number>(
+    metrics.find((metric) => metric.key === "pendingJobs")?.value ?? 0,
+  );
+
+  useEffect(() => {
+    const unsubscribeContainer = subscribeToPlatformEvent("containerSelected", ({ id }) => {
+      setSelectedContainerId(id);
+    });
+
+    const unsubscribeJob = subscribeToPlatformEvent("jobUpdated", ({ id, status }) => {
+      setLastJobUpdate({ id, status });
+      setPendingJobs((current) => {
+        if (status === "Completed") {
+          return Math.max(0, current - 1);
+        }
+
+        return current;
+      });
+    });
+
+    return () => {
+      unsubscribeContainer();
+      unsubscribeJob();
+    };
+  }, []);
+
+  const dashboardMetrics = useMemo(
+    () =>
+      metrics.map((metric) =>
+        metric.key === "pendingJobs" ? { ...metric, value: pendingJobs } : metric,
+      ),
+    [pendingJobs],
+  );
+
   return (
     <main className="analytics-shell">
       <section className="analytics-hero">
@@ -23,7 +69,7 @@ function App() {
       </section>
 
       <section className="metric-grid">
-        {metrics.map((metric) => (
+        {dashboardMetrics.map((metric) => (
           <article key={metric.key} className="metric-card">
             <span>{metric.label}</span>
             <strong>{metric.value}</strong>
@@ -36,11 +82,16 @@ function App() {
         <div>
           <h2>Bootstrap insight lane</h2>
           <p>
-            The next platform milestone will let this remote subscribe to yard and
-            planning events instead of relying on local mock metrics.
+            {selectedContainerId
+              ? `Container ${selectedContainerId} was selected in yard operations.`
+              : "Waiting for a container selection from yard operations."}
           </p>
         </div>
-        <div className="insight-chip">Awaiting shared event bus hookup</div>
+        <div className="insight-chip">
+          {lastJobUpdate
+            ? `${lastJobUpdate.id} -> ${lastJobUpdate.status}`
+            : "Awaiting planning status updates"}
+        </div>
       </section>
     </main>
   );

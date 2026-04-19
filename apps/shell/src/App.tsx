@@ -1,10 +1,16 @@
-import { Suspense, lazy, useEffect, useState } from "react";
-import type { PlatformRoute, RemoteDefinition } from "@tos/contracts";
+import { Suspense, lazy, useEffect, useState, type ComponentType } from "react";
+import {
+  getLastPlatformEvent,
+  subscribeToPlatformEvent,
+  type JobStatus,
+  type PlatformRoute,
+  type RemoteDefinition,
+} from "@tos/contracts";
 import "./App.css";
 
-const YardRemote = lazy(() => import("yard/App"));
-const PlanningRemote = lazy(() => import("planning/App"));
-const AnalyticsRemote = lazy(() => import("analytics/App"));
+const YardRemote = lazy(() => loadRemoteComponent(() => import("yard/App")));
+const PlanningRemote = lazy(() => loadRemoteComponent(() => import("planning/App")));
+const AnalyticsRemote = lazy(() => loadRemoteComponent(() => import("analytics/App")));
 
 const remoteDefinitions: RemoteDefinition[] = [
   {
@@ -36,11 +42,39 @@ function getCurrentRoute(): PlatformRoute {
 
 function App() {
   const [route, setRoute] = useState<PlatformRoute>(() => getCurrentRoute());
+  const [lastEvent, setLastEvent] = useState<string>(() => {
+    const latestJob = getLastPlatformEvent("jobUpdated");
+    if (latestJob) {
+      return `Planning changed ${latestJob.id} to ${formatJobStatus(latestJob.status)}.`;
+    }
+
+    const latestContainer = getLastPlatformEvent("containerSelected");
+    if (latestContainer) {
+      return `Container ${latestContainer.id} was selected from yard operations.`;
+    }
+
+    return "No cross-MFE event received yet.";
+  });
 
   useEffect(() => {
     const handlePopState = () => setRoute(getCurrentRoute());
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  useEffect(() => {
+    const unsubscribeContainer = subscribeToPlatformEvent("containerSelected", ({ id }) => {
+      setLastEvent(`Container ${id} was selected from yard operations.`);
+    });
+
+    const unsubscribeJob = subscribeToPlatformEvent("jobUpdated", ({ id, status }) => {
+      setLastEvent(`Planning changed ${id} to ${formatJobStatus(status)}.`);
+    });
+
+    return () => {
+      unsubscribeContainer();
+      unsubscribeJob();
+    };
   }, []);
 
   const navigate = (nextRoute: PlatformRoute) => {
@@ -71,6 +105,11 @@ function App() {
           <strong>{activeRemote ? activeRemote.displayName : "Platform overview"}</strong>
           <p>{activeRemote ? activeRemote.module : "Select a route to mount a remote."}</p>
         </div>
+      </section>
+
+      <section className="event-banner">
+        <span>Shared event bus</span>
+        <strong>{lastEvent}</strong>
       </section>
 
       <nav className="shell-nav" aria-label="Platform navigation">
@@ -151,6 +190,41 @@ function RemoteOutlet({ route }: { route: PlatformRoute }) {
   }
 
   return null;
+}
+
+function formatJobStatus(status: JobStatus) {
+  if (status === "InProgress") {
+    return "In Progress";
+  }
+
+  return status;
+}
+
+function loadRemoteComponent(
+  loader: () => Promise<{
+    default?: unknown;
+  }>,
+) {
+  return loader().then((module) => ({
+    default: resolveRemoteComponent(module),
+  }));
+}
+
+function resolveRemoteComponent(module: { default?: unknown }): ComponentType {
+  if (typeof module.default === "function") {
+    return module.default as ComponentType;
+  }
+
+  if (
+    module.default &&
+    typeof module.default === "object" &&
+    "default" in module.default &&
+    typeof module.default.default === "function"
+  ) {
+    return module.default.default as ComponentType;
+  }
+
+  throw new Error("Remote module did not resolve to a React component.");
 }
 
 export default App;

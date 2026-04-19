@@ -7,6 +7,7 @@
     ".": "./index.ts",
     "./analytics": "./analytics.ts",
     "./container": "./container.ts",
+    "./event-bus": "./event-bus.ts",
     "./events": "./events.ts",
     "./planning": "./planning.ts",
     "./platform": "./platform.ts"

@@ -18,9 +18,9 @@
 
 ## 4. Shared Communication
 
-- [ ] 4.1 Implement the initial typed event bus pattern used by shell and remotes
-- [ ] 4.2 Wire the shell and remotes to the shared contracts and communication primitives without direct cross-domain imports
-- [ ] 4.3 Add a simple cross-MFE interaction path that proves events can be emitted and consumed across the platform
+- [x] 4.1 Implement the initial typed event bus pattern used by shell and remotes
+- [x] 4.2 Wire the shell and remotes to the shared contracts and communication primitives without direct cross-domain imports
+- [x] 4.3 Add a simple cross-MFE interaction path that proves events can be emitted and consumed across the platform
 
 ## 5. Validation
 
