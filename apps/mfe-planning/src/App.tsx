@@ -1,5 +1,6 @@
 import {
   emitPlatformEvent,
+  getPlanningJobSnapshot,
   getLastPlatformEvent,
   setPlanningJobSnapshot,
   subscribeToPlatformEvent,
@@ -20,10 +21,17 @@ import {
 import "./App.css";
 
 function App() {
+  const initialPlanningSnapshot = getPlanningJobSnapshot();
   const [selectedContainerId, setSelectedContainerId] = useState<string | null>(
     getLastPlatformEvent("containerSelected")?.id ?? null,
   );
-  const [jobItems, setJobItems] = useState<PlanningJobRecord[]>(sortPlanningJobs(getPlanningJobs()));
+  const [jobItems, setJobItems] = useState<PlanningJobRecord[]>(
+    sortPlanningJobs(
+      initialPlanningSnapshot.length > 0
+        ? (initialPlanningSnapshot as PlanningJobRecord[])
+        : getPlanningJobs(),
+    ),
+  );
   const movementAssignments = useMemo(() => getMovementAssignments(), []);
   const summary = useMemo(() => getPlanningSummary(jobItems), [jobItems]);
 
