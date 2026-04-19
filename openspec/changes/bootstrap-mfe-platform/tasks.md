@@ -6,9 +6,9 @@
 
 ## 2. Remote Exposure
 
-- [ ] 2.1 Configure `mfe-yard` to expose a remote entry and replace the starter screen with a domain placeholder view
-- [ ] 2.2 Configure `mfe-planning` to expose a remote entry and replace the starter screen with a domain placeholder view
-- [ ] 2.3 Configure `mfe-analytics` to expose a remote entry and replace the starter screen with a domain placeholder view
+- [x] 2.1 Configure `mfe-yard` to expose a remote entry and replace the starter screen with a domain placeholder view
+- [x] 2.2 Configure `mfe-planning` to expose a remote entry and replace the starter screen with a domain placeholder view
+- [x] 2.3 Configure `mfe-analytics` to expose a remote entry and replace the starter screen with a domain placeholder view
 
 ## 3. Shell Composition
 

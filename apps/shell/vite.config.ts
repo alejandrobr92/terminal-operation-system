@@ -7,6 +7,7 @@ export default defineConfig({
     react(),
     federation({
       name: 'shell',
+      dts: false,
       shared: {
         '@tos/contracts': {
           singleton: true,

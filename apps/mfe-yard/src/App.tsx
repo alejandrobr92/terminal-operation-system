@@ -1,121 +1,60 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import type { Container } from "@tos/contracts";
+import "./App.css";
+
+const containers: Container[] = [
+  { id: "MSCU-442109", status: "INBOUND", location: "A1-04", priority: 1 },
+  { id: "TGHU-192880", status: "HOLD", location: "B3-11", priority: 3 },
+  { id: "OOLU-770341", status: "OUTBOUND", location: "C2-07", priority: 2 },
+];
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
+    <main className="yard-shell">
+      <section className="yard-hero">
+        <p className="eyebrow">Remote: Yard Operations</p>
+        <h1>Yard visibility is ready for shell composition.</h1>
+        <p className="summary">
+          This placeholder proves the yard remote can own its own domain surface
+          while sharing contracts with the rest of the platform.
+        </p>
       </section>
 
-      <div className="ticks"></div>
+      <section className="yard-grid">
+        <article className="signal-card">
+          <span>Active blocks</span>
+          <strong>12</strong>
+          <p>Inbound, hold, and outbound stacks are now represented by typed container data.</p>
+        </article>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
+        <article className="signal-card accent">
+          <span>Priority watch</span>
+          <strong>3 containers</strong>
+          <p>High-attention units can be surfaced to planning and analytics through shared events next.</p>
+        </article>
       </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <section className="manifest">
+        <div className="manifest-header">
+          <h2>Bootstrap manifest</h2>
+          <p>Sample units held locally inside the yard remote.</p>
+        </div>
+
+        <ul className="container-list">
+          {containers.map((container) => (
+            <li key={container.id}>
+              <div>
+                <p className="container-id">{container.id}</p>
+                <p className="container-meta">
+                  {container.status} · {container.location}
+                </p>
+              </div>
+              <span className="priority-badge">P{container.priority}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </main>
+  );
 }
 
-export default App
+export default App;

@@ -1,121 +1,84 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import type { Job } from "@tos/contracts";
+import "./App.css";
+
+const jobs: Job[] = [
+  {
+    id: "JOB-1002",
+    containerId: "MSCU-442109",
+    status: "Queued",
+    priority: "High",
+    movementId: "MOVE-17",
+  },
+  {
+    id: "JOB-1005",
+    containerId: "OOLU-770341",
+    status: "Assigned",
+    priority: "Medium",
+    movementId: "MOVE-22",
+  },
+  {
+    id: "JOB-1014",
+    containerId: "TGHU-192880",
+    status: "InProgress",
+    priority: "Low",
+    movementId: "MOVE-31",
+  },
+];
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
+    <main className="planning-shell">
+      <section className="planning-hero">
         <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
+          <p className="eyebrow">Remote: Move Planning</p>
+          <h1>Dispatch planning is mounted as its own domain workspace.</h1>
         </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+        <div className="hero-note">
+          <span>Queue health</span>
+          <strong>{jobs.length} active jobs</strong>
         </div>
       </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <section className="planning-strip">
+        <article>
+          <span>Assignments ready</span>
+          <strong>2</strong>
+        </article>
+        <article>
+          <span>Priority escalations</span>
+          <strong>1</strong>
+        </article>
+        <article>
+          <span>Next shell milestone</span>
+          <strong>Remote routing</strong>
+        </article>
+      </section>
+
+      <section className="queue-panel">
+        <div className="queue-header">
+          <h2>Bootstrap queue</h2>
+          <p>These records are typed through the shared planning contract package.</p>
+        </div>
+
+        <ul className="job-list">
+          {jobs.map((job) => (
+            <li key={job.id}>
+              <div>
+                <p className="job-id">{job.id}</p>
+                <p className="job-meta">
+                  {job.containerId} · {job.movementId}
+                </p>
+              </div>
+              <div className="job-state">
+                <span>{job.status}</span>
+                <strong>{job.priority}</strong>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </main>
+  );
 }
 
-export default App
+export default App;

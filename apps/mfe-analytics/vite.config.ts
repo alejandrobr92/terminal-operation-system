@@ -8,6 +8,10 @@ export default defineConfig({
     federation({
       name: 'mfe-analytics',
       filename: 'remoteEntry.js',
+      dts: false,
+      exposes: {
+        './App': './src/App.tsx',
+      },
       shared: {
         '@tos/contracts': {
           singleton: true,
