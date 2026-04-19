@@ -108,7 +108,8 @@
 }
 
 .queue-header p,
-.job-meta {
+.job-meta,
+.job-detail {
   color: #58679d;
 }
 
@@ -124,7 +125,7 @@
   display: flex;
   justify-content: space-between;
   gap: 1rem;
-  align-items: center;
+  align-items: start;
   padding: 1rem 1.1rem;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.78);
@@ -142,14 +143,40 @@
   color: #202c59;
 }
 
+.job-copy {
+  min-width: 0;
+}
+
+.job-heading {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .job-meta {
   margin: 0.25rem 0 0;
+}
+
+.job-detail {
+  margin: 0.35rem 0 0;
+}
+
+.job-priority {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(89, 105, 176, 0.12);
+  color: #30428a;
+  font-size: 0.82rem;
+  font-weight: 700;
 }
 
 .job-state {
   display: grid;
   justify-items: end;
-  gap: 0.25rem;
+  gap: 0.6rem;
 }
 
 .job-state span {
@@ -161,8 +188,11 @@
   font-weight: 700;
 }
 
-.job-state strong {
-  color: #202c59;
+.job-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: end;
 }
 
 .job-action {
@@ -173,6 +203,15 @@
   color: #f4f6ff;
   font-weight: 700;
   cursor: pointer;
+}
+
+.job-action.subtle {
+  background: rgba(32, 44, 89, 0.08);
+  color: #202c59;
+}
+
+.job-action.complete {
+  background: #2b7a53;
 }
 
 @media (max-width: 720px) {
@@ -193,5 +232,9 @@
 
   .job-state {
     justify-items: start;
+  }
+
+  .job-actions {
+    justify-content: start;
   }
 }

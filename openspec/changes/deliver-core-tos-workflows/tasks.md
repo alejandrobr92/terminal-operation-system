@@ -13,10 +13,10 @@
 
 ## 3. Planning Workflows
 
-- [ ] 3.1 Replace the planning placeholder queue with a job list sourced from the planning data layer
-- [ ] 3.2 Implement planning actions for assigning movements, advancing status, completing tasks, and reprogramming operations
-- [ ] 3.3 Implement priority updates and queue presentation changes that reflect the latest planning state
-- [ ] 3.4 Publish planning updates through shared contracts so the shell and analytics stay consistent with job changes
+- [x] 3.1 Replace the planning placeholder queue with a job list sourced from the planning data layer
+- [x] 3.2 Implement planning actions for assigning movements, advancing status, completing tasks, and reprogramming operations
+- [x] 3.3 Implement priority updates and queue presentation changes that reflect the latest planning state
+- [x] 3.4 Publish planning updates through shared contracts so the shell and analytics stay consistent with job changes
 
 ## 4. Analytics Dashboard
 
