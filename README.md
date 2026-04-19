@@ -67,18 +67,14 @@ Implemented so far:
 - shared contracts package
 - typed event bus
 - shell navigation and fallback loading states
-- remote placeholder UIs for yard, planning, and analytics
-- working cross-MFE event flow:
-  - yard emits `containerSelected`
-  - planning reacts and emits `jobUpdated`
-  - analytics reacts to both
-  - shell reflects the latest shared event
+- yard workflow with filters, detail, and state handling
+- planning workflow with assignment, reprioritization, reprogramming, and completion actions
+- analytics dashboard with derived KPIs, alerts, and pseudo-real-time refresh
+- working cross-MFE event flow and shared planning snapshot synchronization
 
 Still planned:
 
-- richer domain functionality
-- dedicated mock data access layer per domain
-- tests
+- Vercel deployment configuration
 - deployment configuration
 - CI/CD
 
@@ -120,6 +116,7 @@ From the repository root:
 ```bash
 pnpm build
 pnpm lint
+pnpm test
 pnpm dev:shell
 pnpm dev:yard
 pnpm dev:planning
@@ -132,10 +129,10 @@ Once all four apps are running:
 
 1. Open the shell.
 2. Navigate to `/yard`.
-3. Click `Broadcast selection` on a container.
+3. Filter or select a container in `/yard`.
 4. Navigate to `/planning` and confirm the matching job is highlighted.
-5. Click `Advance status`.
-6. Navigate to `/analytics` and confirm the insight/KPI area reflects the update.
+5. Run planning actions such as `Assign move`, `Reprogram`, `Reprioritize`, and `Complete`.
+6. Navigate to `/analytics` and confirm the KPI, alert, and insight areas reflect the update.
 7. Confirm the shell banner shows the latest shared event.
 
 ## Technical Decisions
@@ -163,7 +160,8 @@ The platform uses a typed browser event bus for cross-MFE communication. This ke
 OpenSpec is used to define and implement the platform incrementally:
 
 - baseline product and domain specs live under `openspec/specs`
-- the active foundation change lives under `openspec/changes/bootstrap-mfe-platform`
+- completed foundation work is archived under `openspec/changes/archive/`
+- the current delivery change lives under `openspec/changes/deliver-core-tos-workflows`
 
 This gives traceability from requirements to implementation work.
 
@@ -171,19 +169,19 @@ This gives traceability from requirements to implementation work.
 
 The main active change is:
 
-- `bootstrap-mfe-platform`
+- `deliver-core-tos-workflows`
 
 Key artifact:
 
-- [openspec/changes/bootstrap-mfe-platform/tasks.md](./openspec/changes/bootstrap-mfe-platform/tasks.md)
+- [openspec/changes/deliver-core-tos-workflows/tasks.md](./openspec/changes/deliver-core-tos-workflows/tasks.md)
 
 This tracks the implementation slices for:
 
-- workspace foundation
-- remote exposure
-- shell composition
-- shared communication
-- validation
+- domain data layers
+- yard workflows
+- planning workflows
+- analytics workflows
+- testing and delivery readiness
 
 ## Build and Quality
 
@@ -193,19 +191,22 @@ Current quality baseline:
 - typed contracts
 - typed event communication
 - lint scripts configured per app
+- focused domain-level tests via Vitest
 
-Testing is still pending and should be added before final delivery.
+Testing currently focuses on high-signal domain behaviors:
+
+- yard filtering and selection helpers
+- planning assignment, reprioritization, sorting, and summary logic
+- analytics KPI derivation and alert behavior
 
 ## Known Gaps
 
 The repository is not yet at final challenge scope. The main remaining work is:
 
-- implement real yard operations workflows
-- implement richer planning actions and queue behavior
-- derive analytics from shared data/events more fully
-- add tests
+- finalize delivery validation notes
 - prepare Vercel deployment
 - add CI/CD
+- optional design-system adoption if time allows
 
 ## Challenge Constraints
 

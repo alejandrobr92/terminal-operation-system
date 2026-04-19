@@ -9,12 +9,16 @@
     "dev:shell": "pnpm --filter ./apps/shell dev",
     "dev:yard": "pnpm --filter ./apps/mfe-yard dev",
     "dev:planning": "pnpm --filter ./apps/mfe-planning dev",
-    "dev:analytics": "pnpm --filter ./apps/mfe-analytics dev"
+    "dev:analytics": "pnpm --filter ./apps/mfe-analytics dev",
+    "test": "vitest run"
   },
   "packageManager": "pnpm@10.28.2",
   "private": true,
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "vitest": "^4.1.4"
+  }
 }

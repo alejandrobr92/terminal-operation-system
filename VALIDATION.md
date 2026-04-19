@@ -2,7 +2,7 @@
 
 ## Scope
 
-This document captures the validation performed for the `bootstrap-mfe-platform` OpenSpec change.
+This document captures the validation performed for the active delivery-ready platform state after `bootstrap-mfe-platform` and the in-progress `deliver-core-tos-workflows` change.
 
 It focuses on:
 
@@ -24,11 +24,12 @@ Verified flow:
 
 1. Open the shell.
 2. Navigate to `/yard`.
-3. Select a container with `Broadcast selection`.
+3. Select and filter containers in `/yard`, then inspect the detail panel.
 4. Navigate to `/planning` and verify the related job is highlighted.
-5. Click `Advance status` in planning.
-6. Navigate to `/analytics` and verify the insight/KPI panel reacts.
+5. Run planning actions including `Assign move`, `Reprogram`, `Reprioritize`, `Advance`, and `Complete`.
+6. Navigate to `/analytics` and verify KPI cards, alerts, and insight panels react.
 7. Confirm the shell banner shows the latest cross-MFE event.
+8. Complete every planning job and confirm `Pending jobs` reaches `0` in analytics.
 
 Outcome:
 
@@ -36,6 +37,7 @@ Outcome:
 - remotes load correctly inside the shell
 - fallback composition path works
 - cross-MFE event flow works end to end
+- shared planning snapshot keeps analytics aligned with planning queue state
 
 ## Build Verification
 
@@ -89,33 +91,22 @@ Current interpretation:
 
 ## Follow-up Gaps
 
-The bootstrap change is complete as a foundation, but the following work remains for full challenge delivery:
+Focused automated tests now cover:
 
-### Yard
+- yard filtering and selection helpers
+- planning assignment, summary, and reprioritization helpers
+- analytics KPI derivation and alert generation
 
-- real container list/data access layer
-- filtering by status, type, block, location, and priority
-- container detail view
-- explicit loading, empty, and error states
-- richer operational event modeling
+Run with:
 
-### Planning
+```bash
+pnpm test
+```
 
-- richer operational queue behavior
-- assign/reprogram actions with clearer state transitions
-- better movement/job abstraction
-- persistent mock data layer instead of local component-only arrays
-
-### Analytics
-
-- derived KPIs from domain data instead of mostly local placeholders
-- charts/panels beyond summary cards
-- operational alerts and average timing metrics
+The following work still remains for full challenge delivery:
 
 ### Platform
 
-- automated tests
-- root README refinement as delivery nears
 - Vercel deployment configuration
 - CI/CD with GitHub Actions
 - optional design system adoption if time allows

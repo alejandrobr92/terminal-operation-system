@@ -27,7 +27,7 @@
 
 ## 5. Testing And Delivery Readiness
 
-- [ ] 5.1 Add focused automated tests for yard filtering and detail rendering against structured domain data
-- [ ] 5.2 Add focused automated tests for planning actions and the resulting shared event updates
-- [ ] 5.3 Add focused automated tests for analytics aggregation behavior from yard and planning inputs
-- [ ] 5.4 Update README, validation notes, and any delivery-facing documentation to reflect the completed workflows and testing approach
+- [x] 5.1 Add focused automated tests for yard filtering and detail rendering against structured domain data
+- [x] 5.2 Add focused automated tests for planning actions and the resulting shared event updates
+- [x] 5.3 Add focused automated tests for analytics aggregation behavior from yard and planning inputs
+- [x] 5.4 Update README, validation notes, and any delivery-facing documentation to reflect the completed workflows and testing approach
