@@ -103,6 +103,19 @@ export function getYardContainers() {
   return yardContainers;
 }
 
+export function getYardOverview(containers: YardContainerRecord[]) {
+  const highPriorityCount = containers.filter((container) => container.priority === 1).length;
+  const holdCount = containers.filter((container) => container.status === "HOLD").length;
+  const occupiedBlocks = new Set(containers.map((container) => container.block)).size;
+
+  return {
+    highPriorityCount,
+    holdCount,
+    occupiedBlocks,
+    totalContainers: containers.length,
+  };
+}
+
 export function getYardFilterOptions() {
   return {
     blocks: [...new Set(yardContainers.map((container) => container.block))],
@@ -126,4 +139,15 @@ export function applyYardFilters(
       (filters.priority === "All" || container.priority === filters.priority)
     );
   });
+}
+
+export function findYardContainerById(
+  containers: YardContainerRecord[],
+  containerId: string | null,
+) {
+  if (!containerId) {
+    return null;
+  }
+
+  return containers.find((container) => container.id === containerId) ?? null;
 }

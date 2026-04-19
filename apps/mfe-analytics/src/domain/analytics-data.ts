@@ -47,6 +47,13 @@ const analyticsSeedJobs: Job[] = [
     priority: "Low",
     movementId: "MOVE-31",
   },
+  {
+    id: "JOB-1018",
+    containerId: "TRHU-550781",
+    status: "Queued",
+    priority: "Medium",
+    movementId: "MOVE-36",
+  },
 ];
 
 export function getAnalyticsSeedJobs() {

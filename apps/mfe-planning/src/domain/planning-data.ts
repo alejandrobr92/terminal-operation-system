@@ -43,6 +43,16 @@ const planningJobs: PlanningJobRecord[] = [
     assignedEquipment: "TT-11",
     scheduledWindow: "09:05",
   },
+  {
+    id: "JOB-1018",
+    containerId: "TRHU-550781",
+    status: "Queued",
+    priority: "Medium",
+    movementId: "MOVE-36",
+    assignmentZone: "Depot Transfer",
+    assignedEquipment: "TT-07",
+    scheduledWindow: "10:45",
+  },
 ];
 
 const statusCycle: JobStatus[] = ["Queued", "Assigned", "InProgress", "Completed"];

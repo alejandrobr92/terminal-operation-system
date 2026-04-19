@@ -6,10 +6,10 @@
 
 ## 2. Yard Operations Workflows
 
-- [ ] 2.1 Replace the yard placeholder list with a structured container table or card list sourced from the yard data layer
-- [ ] 2.2 Implement yard filter controls for type, status, block, location, and priority with reset behavior
-- [ ] 2.3 Implement the yard detail view with container attributes, operational events, and loading, empty, and error states
-- [ ] 2.4 Keep yard-to-platform communication aligned with the selected container so downstream domains receive the active context
+- [x] 2.1 Replace the yard placeholder list with a structured container table or card list sourced from the yard data layer
+- [x] 2.2 Implement yard filter controls for type, status, block, location, and priority with reset behavior
+- [x] 2.3 Implement the yard detail view with container attributes, operational events, and loading, empty, and error states
+- [x] 2.4 Keep yard-to-platform communication aligned with the selected container so downstream domains receive the active context
 
 ## 3. Planning Workflows
 
