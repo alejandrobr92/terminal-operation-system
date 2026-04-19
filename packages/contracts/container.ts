@@ -11,3 +11,7 @@ export interface Container {
   location: string;
   priority: number;
 }
+
+export interface ContainerSelection {
+  id: Container["id"];
+}

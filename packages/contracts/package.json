@@ -1,0 +1,14 @@
+{
+  "name": "@tos/contracts",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./index.ts",
+    "./analytics": "./analytics.ts",
+    "./container": "./container.ts",
+    "./events": "./events.ts",
+    "./planning": "./planning.ts",
+    "./platform": "./platform.ts"
+  }
+}

@@ -8,6 +8,7 @@ build/
 # vite
 .vite/
 vite.config.ts.timestamp-*
+.__mf__temp/
 
 # coverage
 coverage/

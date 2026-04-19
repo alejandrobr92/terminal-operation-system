@@ -1,8 +1,8 @@
 ## 1. Workspace Foundation
 
-- [ ] 1.1 Add and configure the Module Federation tooling required by the shell and all three remote applications
-- [ ] 1.2 Update workspace package configuration so shared dependencies and local package imports resolve consistently across apps
-- [ ] 1.3 Expand `packages/contracts` to include the shared event and domain contract surface needed for bootstrap integration
+- [x] 1.1 Add and configure the Module Federation tooling required by the shell and all three remote applications
+- [x] 1.2 Update workspace package configuration so shared dependencies and local package imports resolve consistently across apps
+- [x] 1.3 Expand `packages/contracts` to include the shared event and domain contract surface needed for bootstrap integration
 
 ## 2. Remote Exposure
 
