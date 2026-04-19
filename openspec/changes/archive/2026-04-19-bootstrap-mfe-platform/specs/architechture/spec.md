@@ -1,22 +1,4 @@
-# Microfrontend Architecture
-
-## Purpose
-
-Define the integration and communication strategy between microfrontends.
-
-## Requirements
-
-### Requirement 1: Define system structure
-
-The system MUST consist of a shell and multiple microfrontends.
-
-#### Scenario: System composition
-
-- **WHEN** the platform is initialized
-- **THEN** the system MUST include shell, yard, planning, and analytics MFEs
-- **AND** each MFE MUST be independently developed
-
----
+## MODIFIED Requirements
 
 ### Requirement 2: Use Module Federation
 
@@ -34,8 +16,6 @@ The system MUST use Module Federation for runtime integration, with the shell co
 - **THEN** shared dependencies such as React and React DOM MUST be reused across applications
 - **AND** the platform MUST avoid duplicate runtime instances that could break rendering behavior
 
----
-
 ### Requirement 3: Enable communication via event bus
 
 The system MUST use an event bus for communication between MFEs, and the event contracts MUST be defined in a shared typed contract package.
@@ -52,8 +32,6 @@ The system MUST use an event bus for communication between MFEs, and the event c
 - **THEN** its payload MUST conform to the shared event contract definitions
 - **AND** producers and consumers MUST use the same typed event names and payload shapes
 
----
-
 ### Requirement 4: Use shared contracts
 
 The system MUST use shared TypeScript interfaces for consistency, and those contracts MUST be imported from a common workspace package used by shell and remotes.
@@ -69,15 +47,3 @@ The system MUST use shared TypeScript interfaces for consistency, and those cont
 - **WHEN** shell and microfrontends reference shared domain or event types
 - **THEN** they MUST import those types from the common contracts package
 - **AND** the platform MUST avoid duplicating equivalent contract definitions inside individual MFEs
-
----
-
-### Requirement 5: Support scalability
-
-The system MUST support adding new microfrontends without breaking existing ones.
-
-#### Scenario: Add new MFE
-
-- **WHEN** a new microfrontend is introduced
-- **THEN** it MUST integrate without modifying existing MFEs
-- **AND** the system MUST remain stable

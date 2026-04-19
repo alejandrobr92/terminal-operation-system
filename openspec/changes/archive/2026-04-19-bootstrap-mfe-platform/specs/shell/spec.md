@@ -1,10 +1,4 @@
-# Shell Application
-
-## Purpose
-
-Host and integrate all microfrontends into a single platform.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement 1: Provide navigation
 
@@ -22,8 +16,6 @@ The system MUST provide navigation between microfrontends, with the shell owning
 - **THEN** the shell MUST define routes for yard operations, planning, and analytics
 - **AND** each route MUST resolve to the corresponding remote microfrontend
 
----
-
 ### Requirement 2: Load microfrontends
 
 The system MUST load remote microfrontends using Module Federation, and each remote MUST render inside a shell-managed application frame.
@@ -39,8 +31,6 @@ The system MUST load remote microfrontends using Module Federation, and each rem
 - **WHEN** a remote microfrontend has not finished loading
 - **THEN** the shell MUST display a loading or fallback state for that route
 - **AND** the rest of the shell layout MUST remain usable
-
----
 
 ### Requirement 3: Provide shared dependencies
 
