@@ -63,12 +63,13 @@ function App() {
       <section className="analytics-hero">
         <div>
           <p className="eyebrow">Remote: Analytics</p>
-          <h1>Operational signals are ready to aggregate in a dedicated dashboard.</h1>
+          <h1>Monitor operational throughput, queue pressure, and yard-driven signals.</h1>
         </div>
         <p className="hero-copy">
-          This remote is intentionally lightweight for now, but it already speaks
-          the same KPI contract surface the rest of the platform will consume.
+          The dashboard now derives KPI behavior from planning and yard inputs, then
+          refreshes every two seconds to simulate a live operational pulse.
         </p>
+        <div className="hero-pulse">{dashboardState.pulseLabel}</div>
       </section>
 
       <section className="metric-grid">
@@ -77,19 +78,34 @@ function App() {
             <span>{metric.label}</span>
             <strong>{metric.value}</strong>
             <p>{metric.unit}</p>
+            <div className={`metric-delta ${metric.trend}`}>{metric.delta}</div>
+          </article>
+        ))}
+      </section>
+
+      <section className="alert-grid">
+        {dashboardState.alerts.map((alert) => (
+          <article key={alert.label} className={`alert-card ${alert.severity}`}>
+            <span>{alert.label}</span>
+            <strong>{alert.detail}</strong>
           </article>
         ))}
       </section>
 
       <section className="insight-panel">
-        <div>
+        <div className="insight-copy">
           <h2>{dashboardState.insight.title}</h2>
           <p>{dashboardState.insight.detail}</p>
         </div>
-        <div className="insight-chip">
-          {lastJobUpdate
-            ? `${lastJobUpdate.id} -> ${lastJobUpdate.status}`
-            : "Awaiting planning status updates"}
+        <div className="insight-rail">
+          <div className="insight-chip">
+            {lastJobUpdate
+              ? `${lastJobUpdate.id} -> ${lastJobUpdate.status}`
+              : "Awaiting planning status updates"}
+          </div>
+          <div className="insight-chip subtle">
+            {selectedContainerId ? `Focused container ${selectedContainerId}` : "No active yard selection"}
+          </div>
         </div>
       </section>
     </main>

@@ -20,10 +20,10 @@
 
 ## 4. Analytics Dashboard
 
-- [ ] 4.1 Replace placeholder analytics cards with KPI panels derived from analytics aggregation logic
-- [ ] 4.2 Implement pseudo realtime refresh behavior that updates dashboard values every 2 seconds while the analytics view is active
-- [ ] 4.3 Add a monitoring or insight panel that summarizes relevant yard and planning changes
-- [ ] 4.4 Ensure analytics reacts to shared yard and planning events without coupling to remote component internals
+- [x] 4.1 Replace placeholder analytics cards with KPI panels derived from analytics aggregation logic
+- [x] 4.2 Implement pseudo realtime refresh behavior that updates dashboard values every 2 seconds while the analytics view is active
+- [x] 4.3 Add a monitoring or insight panel that summarizes relevant yard and planning changes
+- [x] 4.4 Ensure analytics reacts to shared yard and planning events without coupling to remote component internals
 
 ## 5. Testing And Delivery Readiness
 

@@ -5,6 +5,7 @@
 
 .analytics-hero,
 .metric-card,
+.alert-card,
 .insight-panel {
   border-radius: 28px;
   border: 1px solid rgba(160, 87, 58, 0.16);
@@ -21,6 +22,17 @@
 .analytics-hero {
   display: grid;
   gap: 1rem;
+}
+
+.hero-pulse {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  padding: 0.65rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+  color: #8b4025;
+  font-weight: 700;
 }
 
 .eyebrow {
@@ -85,11 +97,75 @@
   margin: 0.35rem 0 0;
 }
 
+.metric-delta {
+  margin-top: 0.8rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.metric-delta.up {
+  color: #8f4a23;
+}
+
+.metric-delta.down {
+  color: #2d7a53;
+}
+
+.metric-delta.stable {
+  color: #8b543f;
+}
+
+.alert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.alert-card {
+  padding: 1.1rem 1.2rem;
+}
+
+.alert-card span {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.alert-card strong {
+  display: block;
+  margin-top: 0.6rem;
+  color: #562915;
+  line-height: 1.4;
+}
+
+.alert-card.stable span {
+  color: #7a7f45;
+}
+
+.alert-card.watch span {
+  color: #b15c3d;
+}
+
+.alert-card.critical span {
+  color: #a2341d;
+}
+
 .insight-panel {
   display: flex;
   gap: 1rem;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
+}
+
+.insight-copy {
+  max-width: 54ch;
+}
+
+.insight-rail {
+  display: grid;
+  gap: 0.7rem;
 }
 
 .insight-chip {
@@ -101,9 +177,18 @@
   text-align: center;
 }
 
+.insight-chip.subtle {
+  background: rgba(255, 255, 255, 0.48);
+  color: #8b543f;
+}
+
 @media (max-width: 720px) {
   .insight-panel {
     flex-direction: column;
     align-items: start;
+  }
+
+  .insight-rail {
+    width: 100%;
   }
 }
