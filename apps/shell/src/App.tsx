@@ -8,10 +8,12 @@ import {
 } from "@tos/contracts";
 import "./App.css";
 
+// Each remote is loaded lazily so the shell stays responsive while federation resolves bundles.
 const YardRemote = lazy(() => loadRemoteComponent(() => import("yard/App")));
 const PlanningRemote = lazy(() => loadRemoteComponent(() => import("planning/App")));
 const AnalyticsRemote = lazy(() => loadRemoteComponent(() => import("analytics/App")));
 
+// This is the shell's routing table: the shell owns navigation, not the remotes.
 const remoteDefinitions: RemoteDefinition[] = [
   {
     id: "yard",
@@ -36,6 +38,7 @@ const remoteDefinitions: RemoteDefinition[] = [
 const routeSet = new Set<PlatformRoute>(["/", "/yard", "/planning", "/analytics"]);
 
 function getCurrentRoute(): PlatformRoute {
+  // Invalid URLs fall back to the shell overview instead of crashing the host.
   const pathname = window.location.pathname as PlatformRoute;
   return routeSet.has(pathname) ? pathname : "/";
 }
@@ -43,6 +46,7 @@ function getCurrentRoute(): PlatformRoute {
 function App() {
   const [route, setRoute] = useState<PlatformRoute>(() => getCurrentRoute());
   const [lastEvent, setLastEvent] = useState<string>(() => {
+    // The shell rehydrates the latest known cross-MFE event so refresh/remount still tells a coherent story.
     const latestJob = getLastPlatformEvent("jobUpdated");
     if (latestJob) {
       return `Planning changed ${latestJob.id} to ${formatJobStatus(latestJob.status)}.`;
@@ -57,12 +61,14 @@ function App() {
   });
 
   useEffect(() => {
+    // The shell implements its own lightweight router with the History API.
     const handlePopState = () => setRoute(getCurrentRoute());
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
   useEffect(() => {
+    // The shell never imports domain internals; it only listens to shared platform events.
     const unsubscribeContainer = subscribeToPlatformEvent("containerSelected", ({ id }) => {
       setLastEvent(`Container ${id} was selected from yard operations.`);
     });
@@ -82,6 +88,7 @@ function App() {
       return;
     }
 
+    // pushState keeps routing local to the SPA while preserving browser back/forward support.
     window.history.pushState({}, "", nextRoute);
     setRoute(nextRoute);
   };
@@ -205,12 +212,14 @@ function loadRemoteComponent(
     default?: unknown;
   }>,
 ) {
+  // Module Federation + React.lazy expects a default React component, so we normalize the remote shape here.
   return loader().then((module) => ({
     default: resolveRemoteComponent(module),
   }));
 }
 
 function resolveRemoteComponent(module: { default?: unknown }): ComponentType {
+  // Some federation responses arrive as { default: Component }, others as { default: { default: Component } }.
   if (typeof module.default === "function") {
     return module.default as ComponentType;
   }

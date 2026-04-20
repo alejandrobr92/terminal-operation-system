@@ -1,5 +1,6 @@
 import type { Container, ContainerStatus } from "@tos/contracts";
 
+// This module is the yard remote's local data layer: UI components consume these helpers instead of inline arrays.
 export type YardEventType =
   | "Inbound"
   | "Outbound"
@@ -104,6 +105,7 @@ export function getYardContainers() {
 }
 
 export function getYardOverview(containers: YardContainerRecord[]) {
+  // These aggregates power the yard summary cards and keep display math outside the component.
   const highPriorityCount = containers.filter((container) => container.priority === 1).length;
   const holdCount = containers.filter((container) => container.status === "HOLD").length;
   const occupiedBlocks = new Set(containers.map((container) => container.block)).size;
@@ -117,6 +119,7 @@ export function getYardOverview(containers: YardContainerRecord[]) {
 }
 
 export function getYardFilterOptions() {
+  // Filter values are derived from the dataset so controls stay in sync with the available domain records.
   return {
     blocks: [...new Set(yardContainers.map((container) => container.block))],
     locations: [...new Set(yardContainers.map((container) => container.location))],
@@ -130,6 +133,7 @@ export function applyYardFilters(
   containers: YardContainerRecord[],
   filters: YardFilterState,
 ) {
+  // The filtering logic lives here so it can be reused and tested independently from React rendering.
   return containers.filter((container) => {
     return (
       (filters.type === "All" || container.type === filters.type) &&

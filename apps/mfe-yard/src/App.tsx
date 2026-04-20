@@ -27,12 +27,12 @@ function App() {
 
   const handleSelectContainer = (container: YardContainerRecord) => {
     setSelectedContainerId(container.id);
+    // Yard publishes the active container so planning and analytics can react without direct imports.
     emitPlatformEvent("containerSelected", { id: container.id });
   };
 
   useEffect(() => {
-    setViewState("loading");
-
+    // The timeout intentionally simulates async data access so loading/empty/error states are visible in the demo.
     const timeoutId = window.setTimeout(() => {
       if (dataMode === "error") {
         setAvailableContainers([]);
@@ -51,6 +51,7 @@ function App() {
   }, [dataMode]);
 
   const filteredContainers = useMemo(
+    // React only recomputes the filtered worklist when the dataset or filters change.
     () => applyYardFilters(availableContainers, filters),
     [availableContainers, filters],
   );
@@ -60,32 +61,25 @@ function App() {
     [filteredContainers, selectedContainerId],
   );
 
+  const activeContainer = useMemo(() => {
+    if (viewState !== "ready") {
+      return null;
+    }
+
+    return selectedContainer ?? filteredContainers[0] ?? null;
+  }, [filteredContainers, selectedContainer, viewState]);
+
   const overview = useMemo(
     () => getYardOverview(availableContainers),
     [availableContainers],
   );
 
   useEffect(() => {
-    if (viewState !== "ready") {
-      setSelectedContainerId(null);
-      return;
+    if (activeContainer) {
+      // Re-emitting on derived selection keeps downstream remotes aligned after filter changes or remounts.
+      emitPlatformEvent("containerSelected", { id: activeContainer.id });
     }
-
-    if (filteredContainers.length === 0) {
-      setSelectedContainerId(null);
-      return;
-    }
-
-    if (!selectedContainer) {
-      setSelectedContainerId(filteredContainers[0].id);
-    }
-  }, [filteredContainers, selectedContainer, viewState]);
-
-  useEffect(() => {
-    if (selectedContainer) {
-      emitPlatformEvent("containerSelected", { id: selectedContainer.id });
-    }
-  }, [selectedContainer]);
+  }, [activeContainer]);
 
   const handleFilterChange = <TKey extends keyof YardFilterState>(
     key: TKey,
@@ -101,6 +95,11 @@ function App() {
     setFilters(defaultYardFilters);
   };
 
+  const handleDataModeChange = (nextMode: DataMode) => {
+    setDataMode(nextMode);
+    setViewState("loading");
+  };
+
   return (
     <main className="yard-shell">
       <section className="yard-hero">
@@ -111,21 +110,21 @@ function App() {
         <div className="mode-switcher" aria-label="Demo data state">
           <button
             className={dataMode === "live" ? "mode-button active" : "mode-button"}
-            onClick={() => setDataMode("live")}
+            onClick={() => handleDataModeChange("live")}
             type="button"
           >
             Live data
           </button>
           <button
             className={dataMode === "empty" ? "mode-button active" : "mode-button"}
-            onClick={() => setDataMode("empty")}
+            onClick={() => handleDataModeChange("empty")}
             type="button"
           >
             Empty state
           </button>
           <button
             className={dataMode === "error" ? "mode-button active" : "mode-button"}
-            onClick={() => setDataMode("error")}
+            onClick={() => handleDataModeChange("error")}
             type="button"
           >
             Error state
@@ -281,7 +280,7 @@ function App() {
                 {filteredContainers.map((container) => (
                   <li
                     key={container.id}
-                    className={selectedContainerId === container.id ? "container-item active" : "container-item"}
+                    className={activeContainer?.id === container.id ? "container-item active" : "container-item"}
                   >
                     <button
                       className="container-card"
@@ -299,7 +298,7 @@ function App() {
                         <span className="priority-badge">P{container.priority}</span>
                         <span className="status-pill">{container.block}</span>
                         <span className="select-button active">
-                          {selectedContainerId === container.id ? "Selected" : "Inspect"}
+                          {activeContainer?.id === container.id ? "Selected" : "Inspect"}
                         </span>
                       </div>
                     </button>
@@ -312,43 +311,43 @@ function App() {
           <aside className="detail-panel">
             <div className="detail-header">
               <span className="eyebrow">Container Detail</span>
-              <h3>{selectedContainer ? selectedContainer.id : "No active selection"}</h3>
+              <h3>{activeContainer ? activeContainer.id : "No active selection"}</h3>
             </div>
 
-            {selectedContainer ? (
+            {activeContainer ? (
               <>
                 <dl className="detail-grid">
                   <div>
                     <dt>Status</dt>
-                    <dd>{selectedContainer.status}</dd>
+                    <dd>{activeContainer.status}</dd>
                   </div>
                   <div>
                     <dt>Type</dt>
-                    <dd>{selectedContainer.type}</dd>
+                    <dd>{activeContainer.type}</dd>
                   </div>
                   <div>
                     <dt>Location</dt>
-                    <dd>{selectedContainer.location}</dd>
+                    <dd>{activeContainer.location}</dd>
                   </div>
                   <div>
                     <dt>Block</dt>
-                    <dd>{selectedContainer.block}</dd>
+                    <dd>{activeContainer.block}</dd>
                   </div>
                   <div>
                     <dt>Priority</dt>
-                    <dd>P{selectedContainer.priority}</dd>
+                    <dd>P{activeContainer.priority}</dd>
                   </div>
                   <div>
                     <dt>Load state</dt>
-                    <dd>{selectedContainer.isEmpty ? "Empty" : "Loaded"}</dd>
+                    <dd>{activeContainer.isEmpty ? "Empty" : "Loaded"}</dd>
                   </div>
                 </dl>
 
                 <section className="detail-section">
                   <h4>Operational events</h4>
                   <ul className="event-list">
-                    {selectedContainer.events.map((event) => (
-                      <li key={`${selectedContainer.id}-${event.type}-${event.timestamp}`}>
+                    {activeContainer.events.map((event) => (
+                      <li key={`${activeContainer.id}-${event.type}-${event.timestamp}`}>
                         <strong>{event.type}</strong>
                         <span>{event.timestamp}</span>
                         <p>{event.note}</p>

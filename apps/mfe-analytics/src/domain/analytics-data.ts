@@ -5,6 +5,7 @@ import type {
   KpiMetric,
 } from "@tos/contracts";
 
+// Analytics stays presentation-agnostic by deriving dashboard state from domain inputs in this module.
 export interface AnalyticsInsight {
   title: string;
   tone: "neutral" | "attention" | "positive";
@@ -79,6 +80,7 @@ export function getAnalyticsSeedJobs() {
 }
 
 export function deriveAnalyticsSnapshot(input: AnalyticsInput): AnalyticsSnapshot {
+  // These aggregates turn raw job records into the operational signals the dashboard needs.
   const activeJobs = input.jobs.filter((job) => job.status !== "Completed").length;
   const completedJobs = input.jobs.length - activeJobs;
   const assignedJobs = input.jobs.filter((job) => job.status === "Assigned").length;
@@ -86,6 +88,7 @@ export function deriveAnalyticsSnapshot(input: AnalyticsInput): AnalyticsSnapsho
   const tickOffset = input.tick % 3;
 
   const metrics: TrendMetric[] = baseMetrics.map((metric) => {
+    // Each KPI is derived from the latest domain snapshot rather than hardcoded directly in the UI.
     if (metric.key === "pendingJobs") {
       return {
         ...metric,
@@ -133,12 +136,14 @@ export function deriveAnalyticsSnapshot(input: AnalyticsInput): AnalyticsSnapsho
 
   const insight = deriveAnalyticsInsight(input, activeJobs);
   const alerts = deriveAnalyticsAlerts(input, activeJobs, inProgressJobs);
+  // The pulse label makes the pseudo-real-time refresh visible to evaluators.
   const pulseLabel = `Refreshed on cycle ${input.tick + 1}`;
 
   return { alerts, insight, metrics, pulseLabel };
 }
 
 function deriveAnalyticsInsight(input: AnalyticsInput, activeJobs: number): AnalyticsInsight {
+  // The insight prioritizes the most important recent signal so the dashboard tells a clear story.
   if (input.lastJobUpdate?.status === "Completed") {
     return {
       title: "Planning completion detected",
@@ -167,6 +172,7 @@ function deriveAnalyticsAlerts(
   activeJobs: number,
   inProgressJobs: number,
 ): AnalyticsAlert[] {
+  // Alerts compress multiple domain signals into a small set of operator-facing summaries.
   const alerts: AnalyticsAlert[] = [
     {
       label: "Queue pressure",

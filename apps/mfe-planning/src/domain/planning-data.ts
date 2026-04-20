@@ -1,5 +1,6 @@
 import type { Job, JobPriority, JobStatus } from "@tos/contracts";
 
+// This module is the planning remote's local domain layer: queue mutations and sorting rules live here.
 export interface PlanningJobRecord extends Job {
   assignmentZone: string;
   assignedEquipment: string;
@@ -87,6 +88,7 @@ export function getNextJobPriority(priority: JobPriority) {
 }
 
 export function getPriorityWeight(priority: JobPriority) {
+  // A simple numeric weight keeps queue ordering easy to reason about and test.
   if (priority === "High") {
     return 3;
   }
@@ -99,6 +101,7 @@ export function getPriorityWeight(priority: JobPriority) {
 }
 
 export function sortPlanningJobs(jobs: PlanningJobRecord[]) {
+  // Priority wins first; scheduled window breaks ties to keep the queue deterministic.
   return [...jobs].sort((left, right) => {
     const priorityDelta = getPriorityWeight(right.priority) - getPriorityWeight(left.priority);
     if (priorityDelta !== 0) {
@@ -117,6 +120,7 @@ export function completePlanningJob(job: PlanningJobRecord) {
 }
 
 export function assignPlanningMovement(job: PlanningJobRecord, assignment: MovementAssignment) {
+  // Assignment also advances the job into an "Assigned" state because the queue should reflect that immediately.
   return {
     ...job,
     status: "Assigned" as const,
@@ -141,6 +145,7 @@ export function reprioritizePlanningJob(job: PlanningJobRecord) {
 }
 
 export function getPlanningSummary(jobs: PlanningJobRecord[]): PlanningSummary {
+  // Summary cards are derived here so the UI stays mostly declarative.
   return {
     assignedCount: jobs.filter((job) => job.status === "Assigned").length,
     escalationCount: jobs.filter((job) => job.priority === "High").length,

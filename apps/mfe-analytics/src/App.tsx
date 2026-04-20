@@ -18,6 +18,7 @@ function App() {
     getLastPlatformEvent("jobUpdated") ?? null,
   );
   const [jobSnapshots, setJobSnapshots] = useState(
+    // Analytics can boot from the current planning snapshot even if planning is not mounted right now.
     initialPlanningSnapshot.length > 0 ? initialPlanningSnapshot : getAnalyticsSeedJobs(),
   );
   const [refreshTick, setRefreshTick] = useState(0);
@@ -27,6 +28,7 @@ function App() {
       setSelectedContainerId(id);
     });
 
+    // Snapshot subscription gives analytics full queue truth; the event bus alone only tells us "what just changed".
     const unsubscribePlanningSnapshot = subscribeToPlanningJobSnapshot((jobs) => {
       setJobSnapshots(jobs);
     });
@@ -36,6 +38,7 @@ function App() {
     });
 
     const intervalId = window.setInterval(() => {
+      // This interval intentionally simulates a live operations dashboard without requiring a backend stream.
       setRefreshTick((current) => current + 1);
     }, 2000);
 
@@ -48,6 +51,7 @@ function App() {
   }, []);
 
   const dashboardState = useMemo(
+    // The component renders only pre-derived dashboard state and does not implement KPI math inline.
     () =>
       deriveAnalyticsSnapshot({
         containerSelection: selectedContainerId ? { id: selectedContainerId } : null,

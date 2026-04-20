@@ -27,6 +27,7 @@ function App() {
   );
   const [jobItems, setJobItems] = useState<PlanningJobRecord[]>(
     sortPlanningJobs(
+      // Planning rehydrates from the shared snapshot first so state survives shell remounts.
       initialPlanningSnapshot.length > 0
         ? (initialPlanningSnapshot as PlanningJobRecord[])
         : getPlanningJobs(),
@@ -36,12 +37,14 @@ function App() {
   const summary = useMemo(() => getPlanningSummary(jobItems), [jobItems]);
 
   useEffect(() => {
+    // The queue reacts to yard context through the shared event bus, not through shell-owned shared state.
     return subscribeToPlatformEvent("containerSelected", ({ id }) => {
       setSelectedContainerId(id);
     });
   }, []);
 
   useEffect(() => {
+    // Planning is the source of truth for current queue state and republishes it for analytics/remount recovery.
     setPlanningJobSnapshot(jobItems);
   }, [jobItems]);
 
@@ -66,6 +69,7 @@ function App() {
       ),
     );
 
+    // Every operational action updates local queue state and emits a coarse-grained platform event.
     emitPlatformEvent("jobUpdated", {
       id: targetJob.id,
       status: nextStatus,
@@ -116,6 +120,7 @@ function App() {
       return;
     }
 
+    // Cycling assignments keeps the challenge demo interactive without introducing a backend.
     const assignmentIndex = movementAssignments.findIndex(
       (assignment) => assignment.movementId === targetJob.movementId,
     );
@@ -141,6 +146,7 @@ function App() {
       return;
     }
 
+    // Reprogramming shifts the scheduled window forward to demonstrate planning changes in a visible way.
     const [hours, minutes] = targetJob.scheduledWindow.split(":").map(Number);
     const nextMinutes = (hours * 60 + minutes + 20) % (24 * 60);
     const nextHour = String(Math.floor(nextMinutes / 60)).padStart(2, "0");
