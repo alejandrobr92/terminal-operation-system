@@ -35,7 +35,26 @@ jobs:
       - name: Test
         run: pnpm test
 
-      - name: Build
+      - name: Build yard
+        working-directory: apps/mfe-yard
+        env:
+          VITE_REMOTE_PUBLIC_URL: https://terminal-operation-system-mfe-yard.vercel.app
+        run: pnpm build
+
+      - name: Build planning
+        working-directory: apps/mfe-planning
+        env:
+          VITE_REMOTE_PUBLIC_URL: https://terminal-operation-system-mfe-plann.vercel.app
+        run: pnpm build
+
+      - name: Build analytics
+        working-directory: apps/mfe-analytics
+        env:
+          VITE_REMOTE_PUBLIC_URL: https://terminal-operation-system-mfe-analy.vercel.app
+        run: pnpm build
+
+      - name: Build shell
+        working-directory: apps/shell
         env:
           VITE_YARD_REMOTE_URL: https://terminal-operation-system-mfe-yard.vercel.app
           VITE_PLANNING_REMOTE_URL: https://terminal-operation-system-mfe-plann.vercel.app
