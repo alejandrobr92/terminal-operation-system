@@ -36,4 +36,8 @@ jobs:
         run: pnpm test
 
       - name: Build
+        env:
+          VITE_YARD_REMOTE_URL: https://terminal-operation-system-mfe-yard.vercel.app
+          VITE_PLANNING_REMOTE_URL: https://terminal-operation-system-mfe-plann.vercel.app
+          VITE_ANALYTICS_REMOTE_URL: https://terminal-operation-system-mfe-analy.vercel.app
         run: pnpm build
