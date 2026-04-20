@@ -8,9 +8,25 @@ function getRemoteDefinition(remoteName: string, remoteUrl: string) {
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
-  const yardRemoteUrl = env.VITE_YARD_REMOTE_URL ?? "http://127.0.0.1:3001";
-  const planningRemoteUrl = env.VITE_PLANNING_REMOTE_URL ?? "http://127.0.0.1:3002";
-  const analyticsRemoteUrl = env.VITE_ANALYTICS_REMOTE_URL ?? "http://127.0.0.1:3003";
+  const yardRemoteUrl =
+    process.env.VITE_YARD_REMOTE_URL ?? env.VITE_YARD_REMOTE_URL ?? "http://127.0.0.1:3001";
+  const planningRemoteUrl =
+    process.env.VITE_PLANNING_REMOTE_URL ?? env.VITE_PLANNING_REMOTE_URL ?? "http://127.0.0.1:3002";
+  const analyticsRemoteUrl =
+    process.env.VITE_ANALYTICS_REMOTE_URL ?? env.VITE_ANALYTICS_REMOTE_URL ?? "http://127.0.0.1:3003";
+
+  if (
+    mode !== "development" &&
+    (
+      !process.env.VITE_YARD_REMOTE_URL ||
+      !process.env.VITE_PLANNING_REMOTE_URL ||
+      !process.env.VITE_ANALYTICS_REMOTE_URL
+    )
+  ) {
+    throw new Error(
+      "Production shell builds require VITE_YARD_REMOTE_URL, VITE_PLANNING_REMOTE_URL, and VITE_ANALYTICS_REMOTE_URL.",
+    );
+  }
 
   return {
     plugins: [
