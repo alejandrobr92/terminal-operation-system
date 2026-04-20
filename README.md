@@ -9,7 +9,7 @@ The platform is composed of:
 - `mfe-planning`: move planning and operational jobs
 - `mfe-analytics`: operational KPI and monitoring dashboard
 
-This repository follows a spec-driven workflow with OpenSpec and currently prioritizes architectural clarity, typed contracts, and real microfrontend separation.
+This repository follows a spec-driven workflow with OpenSpec and delivers a challenge-ready microfrontend demo with real domain separation, shared contracts, and deployed remotes.
 
 ## Goals
 
@@ -72,11 +72,12 @@ Implemented so far:
 - analytics dashboard with derived KPIs, alerts, and pseudo-real-time refresh
 - working cross-MFE event flow and shared planning snapshot synchronization
 
-Still planned:
+Live deployment:
 
-- Vercel deployment configuration
-- deployment configuration
-- CI/CD
+- shell: `https://terminal-operation-system-shell.vercel.app`
+- yard: `https://terminal-operation-system-mfe-yard.vercel.app`
+- planning: `https://terminal-operation-system-mfe-plann.vercel.app`
+- analytics: `https://terminal-operation-system-mfe-analy.vercel.app`
 
 ## Getting Started
 
@@ -180,27 +181,16 @@ OpenSpec is used to define and implement the platform incrementally:
 
 - baseline product and domain specs live under `openspec/specs`
 - completed foundation work is archived under `openspec/changes/archive/`
-- the current delivery change lives under `openspec/changes/deliver-core-tos-workflows`
+- delivery changes are documented through OpenSpec before implementation and archived after completion
 
 This gives traceability from requirements to implementation work.
 
 ## OpenSpec Workflow
 
-The main active change is:
+Completed changes are tracked in `openspec/changes/archive/`. The two key delivery milestones in this repository are:
 
+- `bootstrap-mfe-platform`
 - `deliver-core-tos-workflows`
-
-Key artifact:
-
-- [openspec/changes/deliver-core-tos-workflows/tasks.md](./openspec/changes/deliver-core-tos-workflows/tasks.md)
-
-This tracks the implementation slices for:
-
-- domain data layers
-- yard workflows
-- planning workflows
-- analytics workflows
-- testing and delivery readiness
 
 ## Build and Quality
 
@@ -220,12 +210,11 @@ Testing currently focuses on high-signal domain behaviors:
 
 ## Known Gaps
 
-The repository is not yet at final challenge scope. The main remaining work is:
+The repository is challenge-ready, but a few follow-up improvements remain:
 
-- finalize delivery validation notes
-- prepare Vercel deployment
-- add CI/CD
-- optional design-system adoption if time allows
+- add CI/CD with GitHub Actions
+- optionally adopt Material UI or Catalyst for a stronger design-system story
+- optionally deepen charts and analytics visualizations
 
 ## Challenge Constraints
 
@@ -240,7 +229,6 @@ Not yet added:
 
 - Material UI or Catalyst
 - GitHub Actions
-- deployed Vercel URLs
 
 ## Notes for Evaluation
 
