@@ -41,13 +41,30 @@ VITE_ANALYTICS_REMOTE_URL=https://your-analytics-app.vercel.app
 
 The shell defaults back to localhost values for local development.
 
+## Remote Environment Variables
+
+Each remote also needs its own public deployment URL during production builds so the generated Module Federation manifest publishes absolute asset paths.
+
+Set this in each remote Vercel project:
+
+```bash
+VITE_REMOTE_PUBLIC_URL=https://your-remote-app.vercel.app
+```
+
+Examples:
+
+- yard: `https://terminal-operation-system-mfe-yard.vercel.app`
+- planning: `https://terminal-operation-system-mfe-plann.vercel.app`
+- analytics: `https://terminal-operation-system-mfe-analy.vercel.app`
+
 ## Deployment Order
 
-1. Deploy `mfe-yard`
-2. Deploy `mfe-planning`
-3. Deploy `mfe-analytics`
-4. Copy those three production URLs into the shell environment variables
-5. Deploy `shell`
+1. Set `VITE_REMOTE_PUBLIC_URL` in `mfe-yard`, `mfe-planning`, and `mfe-analytics`
+2. Deploy `mfe-yard`
+3. Deploy `mfe-planning`
+4. Deploy `mfe-analytics`
+5. Copy those three production URLs into the shell environment variables
+6. Deploy `shell`
 
 ## Verification
 
