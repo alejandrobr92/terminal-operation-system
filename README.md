@@ -11,6 +11,14 @@ The platform is composed of:
 
 This repository follows a spec-driven workflow with OpenSpec and delivers a challenge-ready microfrontend demo with real domain separation, shared contracts, and deployed remotes.
 
+## Why This Stands Out
+
+- real runtime microfrontend composition with a host and 3 deployed remotes
+- typed contracts shared across domains through a workspace package
+- decoupled cross-MFE communication via a typed event bus
+- shared planning snapshot to keep analytics and remounting views consistent
+- focused automated tests and CI-ready verification flow
+
 ## Goals
 
 - demonstrate clear domain boundaries
@@ -43,6 +51,33 @@ openspec/
   changes/
 ARCHITECTURE.md
 README.md
+```
+
+## Architecture At A Glance
+
+```mermaid
+flowchart LR
+  Shell[Shell Host]
+  Yard[Yard MFE]
+  Planning[Planning MFE]
+  Analytics[Analytics MFE]
+  Contracts[Shared Contracts]
+  EventBus[Typed Event Bus]
+  Snapshot[Planning Snapshot]
+
+  Shell --> Yard
+  Shell --> Planning
+  Shell --> Analytics
+  Yard --- Contracts
+  Planning --- Contracts
+  Analytics --- Contracts
+  Yard --> EventBus
+  Planning --> EventBus
+  EventBus --> Shell
+  EventBus --> Analytics
+  Planning --> Snapshot
+  Snapshot --> Analytics
+  Snapshot --> Planning
 ```
 
 ## Microfrontend Approach
@@ -201,12 +236,14 @@ Current quality baseline:
 - typed event communication
 - lint scripts configured per app
 - focused domain-level tests via Vitest
+- GitHub Actions workflow for lint, test, and build verification
 
 Testing currently focuses on high-signal domain behaviors:
 
 - yard filtering and selection helpers
 - planning assignment, reprioritization, sorting, and summary logic
 - analytics KPI derivation and alert behavior
+- shared planning snapshot synchronization and replay safety
 
 ## Known Gaps
 
@@ -228,7 +265,6 @@ Handled:
 Not yet added:
 
 - Material UI or Catalyst
-- GitHub Actions
 
 ## Notes for Evaluation
 
