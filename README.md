@@ -96,7 +96,7 @@ Validation details are documented in [VALIDATION.md](./VALIDATION.md).
 
 ## Current Status
 
-Implemented so far:
+Implemented:
 
 - shell + 3 remotes wired through Module Federation
 - shared contracts package
@@ -178,6 +178,13 @@ VITE_ANALYTICS_REMOTE_URL=https://your-analytics-app.vercel.app
 
 Deployment instructions are documented in [DEPLOYMENT.md](./DEPLOYMENT.md).
 
+Production URLs:
+
+- shell: `https://terminal-operation-system-shell.vercel.app`
+- yard: `https://terminal-operation-system-mfe-yard.vercel.app`
+- planning: `https://terminal-operation-system-mfe-plann.vercel.app`
+- analytics: `https://terminal-operation-system-mfe-analy.vercel.app`
+
 ## Manual Verification Flow
 
 Once all four apps are running:
@@ -249,9 +256,9 @@ Testing currently focuses on high-signal domain behaviors:
 
 The repository is challenge-ready, but a few follow-up improvements remain:
 
-- add CI/CD with GitHub Actions
 - optionally adopt Material UI or Catalyst for a stronger design-system story
 - optionally deepen charts and analytics visualizations
+- optionally add end-to-end browser automation on top of the current focused domain tests
 
 ## Challenge Constraints
 

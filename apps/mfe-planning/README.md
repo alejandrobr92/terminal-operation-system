@@ -7,6 +7,7 @@
 - represent jobs and movement-oriented workflows
 - react to yard signals when relevant
 - emit planning/job status changes
+- publish the current queue snapshot for downstream recovery
 
 ## Local Run
 
@@ -25,3 +26,4 @@ Default URL:
 - Exposes `./App` through Module Federation.
 - Uses shared types from `@tos/contracts`.
 - Consumes `containerSelected` and emits `jobUpdated`.
+- Shares the current queue state through the planning snapshot helper in `@tos/contracts`.

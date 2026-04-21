@@ -6,7 +6,7 @@
 
 - represent yard-oriented container views
 - emit container selection events
-- evolve toward container filters, detail views, and operational event handling
+- own container filters, detail views, demo states, and operational event handling
 
 ## Local Run
 
@@ -25,3 +25,4 @@ Default URL:
 - Exposes `./App` through Module Federation.
 - Uses shared types from `@tos/contracts`.
 - Emits `containerSelected` through the shared event bus.
+- Publishes a focused yard context so planning and analytics can react without direct imports.

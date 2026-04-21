@@ -2,7 +2,7 @@
 
 ## Scope
 
-This document captures the validation performed for the active delivery-ready platform state after `bootstrap-mfe-platform` and the in-progress `deliver-core-tos-workflows` change.
+This document captures the validation performed for the delivery-ready platform state after `bootstrap-mfe-platform` and `deliver-core-tos-workflows`.
 
 It focuses on:
 
@@ -61,6 +61,19 @@ Each remote emits:
 
 The shell builds successfully against the remote manifest configuration.
 
+Successful quality verification:
+
+```bash
+pnpm lint
+pnpm test
+```
+
+Current automated result:
+
+- 4 test files
+- 9 tests passing
+- lint passing across shell and all remotes
+
 ## Shared Runtime Verification
 
 The current federation setup is configured to share these singletons across apps:
@@ -89,9 +102,9 @@ Current interpretation:
 - does not block production build
 - should be revisited before upgrading to Vite 9
 
-## Follow-up Gaps
+## Coverage Summary
 
-Focused automated tests now cover:
+Focused automated tests currently cover:
 
 - yard filtering and selection helpers
 - planning assignment, summary, and reprioritization helpers
@@ -103,14 +116,12 @@ Run with:
 pnpm test
 ```
 
-The following work still remains for full challenge delivery:
+Optional next improvements:
 
-### Platform
-
-- Vercel deployment configuration
-- CI/CD with GitHub Actions
-- optional design system adoption if time allows
+- adopt a formal design system such as Material UI or Catalyst
+- add end-to-end browser automation
+- deepen charting and analytics visualization
 
 ## Recommendation
 
-The architecture foundation is validated enough to move forward. The next priority should be domain depth and testing rather than more platform refactoring.
+The platform is validated enough for challenge submission. The next priority after submission would be polish and longer-term hardening rather than more architectural refactoring.

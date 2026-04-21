@@ -6,7 +6,7 @@
 
 - represent KPI and monitoring views
 - react to shared platform events
-- evolve toward derived metrics and operational alerts
+- derive metrics, alerts, and monitoring insights from shared domain state
 
 ## Local Run
 
@@ -25,3 +25,4 @@ Default URL:
 - Exposes `./App` through Module Federation.
 - Uses shared types from `@tos/contracts`.
 - Reacts to `containerSelected` and `jobUpdated` from the shared event bus.
+- Rehydrates from the shared planning snapshot so KPI state stays aligned with the latest queue.

@@ -9,12 +9,14 @@ This repository implements a frontend-only Terminal Operation System platform us
 - `mfe-planning`: move planning and job orchestration
 - `mfe-analytics`: operational analytics dashboard
 
-The current implementation focuses on establishing a solid architectural foundation first:
+The current implementation focuses on delivering a challenge-ready vertical slice on top of a solid architectural foundation:
 
 - real microfrontend separation through Module Federation
 - shared typed contracts in a workspace package
 - decoupled communication through a typed event bus
 - runtime composition controlled by the shell
+- shared planning snapshot for current-state recovery across remounts
+- deployed shell and remotes on Vercel
 
 ## System Diagram
 
@@ -43,6 +45,7 @@ The current implementation focuses on establishing a solid architectural foundat
                     |   @tos/contracts       |
                     |  shared types          |
                     |  event bus helpers     |
+                    |  planning snapshot     |
                     +------------------------+
 ```
 
@@ -68,7 +71,7 @@ Responsibilities:
 
 - represent yard/container-oriented UI
 - emit container selection events
-- eventually own filtering, detail view, and operational container events
+- own filtering, detail view, demo states, and operational container events
 
 ### Move Planning
 
@@ -77,6 +80,7 @@ Responsibilities:
 - represent job and movement planning UI
 - react to yard signals when relevant
 - emit job status changes
+- publish the latest queue snapshot for analytics and remount recovery
 
 ### Analytics
 
@@ -84,7 +88,7 @@ Responsibilities:
 
 - represent operational KPI views
 - derive insights from yard and planning signals
-- react to shared events rather than importing other MFEs directly
+- react to shared events and planning snapshots rather than importing other MFEs directly
 
 ## Project Structure
 
@@ -125,6 +129,12 @@ Current event flow:
   - emitted by `mfe-planning`
   - consumed by `shell` and `mfe-analytics`
 
+State recovery flow:
+
+- `mfe-planning` republishes the current queue through the shared planning snapshot helper
+- `mfe-analytics` rehydrates from that snapshot on mount
+- `mfe-planning` also rehydrates from the same snapshot so queue state survives shell remounts
+
 Why this approach:
 
 - avoids direct runtime imports between domain MFEs
@@ -137,11 +147,13 @@ Current limitation:
 
 ## Data Strategy
 
-The current bootstrap implementation uses local mock data inside each domain MFE. This was chosen to keep the platform frontend-only and to validate composition before building richer domain behavior.
+The platform uses structured local mock data inside dedicated domain modules for each MFE. This keeps the solution frontend-only while still separating UI from data access and derivation logic.
 
-Next step:
+Current approach:
 
-- move mock data into a dedicated data-access layer per domain so UI and data sourcing are separated more clearly
+- `mfe-yard` owns container records, filter helpers, and yard summary helpers
+- `mfe-planning` owns job records, queue mutation helpers, and queue summary helpers
+- `mfe-analytics` owns KPI derivation, alerts, and insight aggregation
 
 ## Technology Choices
 
@@ -260,13 +272,15 @@ Implemented:
 - typed shared contracts
 - typed event bus
 - shell routing and fallback states
-- one working cross-MFE interaction flow
+- shared planning snapshot for state recovery
+- yard workflow with filters, detail panel, and operational events
+- planning workflow with assignment, reprioritization, reprogramming, and completion
+- analytics workflow with derived KPIs, alerts, and pseudo-real-time refresh
+- Vercel deployment across shell and 3 remotes
+- focused domain tests and GitHub Actions CI
 
-Still needed for full challenge completion:
+Remaining optional improvements:
 
-- richer domain functionality in all 3 MFEs
-- dedicated data access layers
-- tests
-- README expansion
-- Vercel deployment
-- CI/CD
+- adopt a formal design system such as Material UI or Catalyst
+- deepen dashboard visualization beyond cards and alert panels
+- add end-to-end browser automation

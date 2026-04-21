@@ -27,3 +27,4 @@ Default URL:
 - The shell depends on the remotes being available during local development.
 - Remote loading is configured through federation manifests in `vite.config.ts`.
 - The shell is intentionally thin and should not absorb domain-specific business logic.
+- In production, remote manifest URLs are resolved through environment variables so the same shell can target deployed remotes.
